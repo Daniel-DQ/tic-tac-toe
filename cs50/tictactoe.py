@@ -1,12 +1,8 @@
 """
 Tic Tac Toe Player
-TODO
-when the recursive function calls itself and changes a variable like board ..
-apparently it changes that variable all across the call stack , well that's a FUCKING BUG , good luck with that
 """
 
 import math
-import random
 
 X = "X"
 O = "O"
@@ -25,22 +21,20 @@ def initial_state():
 def player(board):
     """
     Returns player who has the next turn on a board.
-
-    make it so that if the board is full it's the X's turn DONE.
+    returns X if board is full or empty.
     """
+
     if board == initial_state():
         return X
 
     li = [j for i in board for j in i]
 
-    """
-    if li.count("X") < li.count("O"):
-        return X
-    """
     if li.count("O") < li.count("X"):
+
         # if the board is full returns X
         if None not in li:
             return X
+
         return O
 
     return X
@@ -50,6 +44,7 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
+
     return {(i, j) for i in range(len(board)) for j in range(len(board)) if board[i][j] is None}
 
 
@@ -57,17 +52,16 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    temp = board.copy()
-    temp[action[0]][action[1]] = player(board)
-    return temp
+
+    board[action[0]][action[1]] = player(board)
+    return board
 
 
 def winner(board):
     """
     Returns the winner of the game, if there is one.
-    TODO : seems fine
-    check this function .. it's not working properly .. maybe in some edge cases
     """
+
     for shape in ["X", "O"]:
         for i in range(3):
             if board[0][i] == board[1][i] == board[2][i] == shape:
@@ -84,6 +78,7 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
+
     for shape in ["X", "O"]:
         for i in range(3):
             if board[0][i] == board[1][i] == board[2][i] == shape:
@@ -99,38 +94,11 @@ def terminal(board):
     return False
 
 
-def utility(board):
-    """
-    Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
-
-    check the winner too . DONE
-    """
-    if terminal(board) and winner(board):
-        if winner(board) == X:
-            return 1 * (num_empty(board)+1)
-        elif winner(board) == O:
-            return -1 * (num_empty(board)+1)
-    return 0
-
-    # return utility(result(board, minimax(board)))
-
-
 def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    """
-    utis = []
-    acts = []
 
-    for action in actions(board):
-        uti = utility(result(board, action))
-        utis.append(uti)
-        acts.append(action)
-        board[action[0]][action[1]] = None
-
-    return acts[utis.index(max(utis))] if player(board) == X else acts[utis.index(min(utis))]
-    """
     if len(actions(board)) == 9:
         square = (1, 1)
     else:
@@ -139,6 +107,11 @@ def minimax(board):
 
 
 def minimax2(board, c_player):
+    """
+    returns the optimal action and it's evaluation for the given board and player
+    """
+
+    # determine if the current player is the max player or otherwise
     max_player = True if c_player == X else False
     other_player = O if max_player else X
 
@@ -150,6 +123,7 @@ def minimax2(board, c_player):
     elif not num_empty(board):
         return {'position': None, 'score': 0}
 
+    # creating a base score to compare with action scores
     if max_player:
         best = {'position': None, 'score': -math.inf}
     else:
