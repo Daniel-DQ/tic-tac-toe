@@ -100,7 +100,7 @@ def minimax(board):
     """
 
     if len(actions(board)) == 9:
-        square = (1, 1)
+        square = (0, 1)
     else:
         square = minimax2(board, player(board))['position']
     return square
